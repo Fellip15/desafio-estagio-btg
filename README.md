@@ -47,3 +47,10 @@ A conta também será uma entidade forte.
 * Valor da movimentação: big decimal
 * Tipo da movimentação: string pré definida (saque, depósito)
 * Data e hora da movimentação: string
+
+## Diagramas
+### MER
+<img src="Diagramas/MER.jpg" alt="MER"/>
+
+### DER
+<img src="Diagramas/DER.jpg" alt="DER"/>
