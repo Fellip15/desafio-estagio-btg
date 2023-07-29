@@ -24,35 +24,26 @@ Após uma breve análise foi possível chegar a conclusão de quais dados devem 
 ### Dados das entidades
 #### Cliente:
 Para o cliente, será necessário armazenar os dados:
-* id: identificador
+* CPF: string (chave primária)
 * Nome completo: string
-* Endereço: string ou entidade completa separada (fraca)
+* Endereço: atributo composto
 * Email: string
-* CPF: string
-* Foto: imagem
 * Data de nascimento: string
-* Número da conta: identificador da entidade conta
+* Telefones de contato: multivalorado
 
 Sendo que, o cliente é uma entidade forte, ou seja, independe das outras para existir, possui sentido por si só.
 
 #### Conta:
 Já para a conta, é impensindível armazenar os seguintes dados:
-* id: identificador
-* Número da conta: string ou inteiro grande
-* Valor total: big decimal
-* Limite de transação: big unsigned decimal (talvez criar uma entidade separada que guarda o tipo da movimentação e o limite dela pra essa conta)
-* Limite de crédito: big unsigned decimal (se for feito o parentesis acima, exclui isso)
+* Número da conta: chave primária
+* Saldo: big decimal
+* Limite de movimentação: big unsigned decimal
 * Senha: string codificada
 
 A conta também será uma entidade forte.
 
 #### Movimentações:
 É a entidade menos complexa do banco de dados:
-* id: identificador
 * Valor da movimentação: big decimal
-* Tipo da movimentação: string pré definida (saque, depósito, etc)
-* Data da movimentação: string
-* Id conta source: identificador da entidade conta
-* Id conta destino: identificador da entidade conta
-
-Entidade associativa, pois ela apenas representará o relacionamento entre as contas, ou seja, representará as transações. Para o tipo movimentação saque e depósito não será necessário o id da conta destino, já que será uma movimentação unilateral.
+* Tipo da movimentação: string pré definida (saque, depósito)
+* Data e hora da movimentação: string
