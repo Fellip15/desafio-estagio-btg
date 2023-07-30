@@ -1,0 +1,5 @@
+pip install Flask-SQLAlchemy
+pip install flask psycopg2-binary SQLAlchemy
+pip3 install psycopg2
+pip install mysqlclient
+sudo service postgresql start
