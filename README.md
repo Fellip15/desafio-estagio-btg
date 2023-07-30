@@ -421,3 +421,317 @@ A API de Movimentações é uma interface para gerenciar as movimentações fina
   "error": "É necessário mandar a data_hora, conta_mov, novo valor e novo tipo"
 }
 ```
+
+## Rota de cliente
+
+A API de Clientes é uma interface para gerenciar informações dos clientes em um sistema. Abaixo estão listadas as rotas disponíveis na API, suas descrições e exemplos de uso.
+
+### Listar Clientes
+
+**Descrição**: Esta rota permite listar todos os clientes cadastrados no sistema.
+
+**Método HTTP**: GET
+
+**URL**: `/api/clientes`
+
+**Resposta**:
+* Código de status: 200 (OK)
+* Corpo da resposta: Uma lista de objetos JSON representando os clientes cadastrados.
+
+**Exemplo de resposta**:
+```json
+[
+  {
+    "cpf": "12345678900",
+    "nome": "João Silva",
+    "email": "joao@example.com",
+    "data_nasc": "1990-01-15",
+    "cep": "12345-678",
+    "numero_casa": 100,
+    "rua": "Rua das Flores",
+    "bairro": "Centro",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  {
+    "cpf": "98765432100",
+    "nome": "Maria Souza",
+    "email": "maria@example.com",
+    "data_nasc": "1985-05-20",
+    "cep": "54321-876",
+    "numero_casa": 50,
+    "rua": "Avenida dos Bandeirantes",
+    "bairro": "Bela Vista",
+    "cidade": "Rio de Janeiro",
+    "estado": "RJ"
+  }
+]
+```
+
+### Obter Cliente por Parâmetro
+**Descrição:** Esta rota permite obter cliente(s) com base em um parâmetro (nome, email ou cpf).
+
+**Método HTTP:** GET
+
+**URL:** ```/api/clientes/<parametro>```
+
+**Parâmetros:**
+
+* `<parametro>`: O valor do parâmetro pelo qual se deseja obter o(s) cliente(s), pode ser nome (substring, pode retornar mais de um cliente), cpf ou email (os dois últimos devem ser completos, retornando apenas um cliente).
+
+**Resposta:**
+
+* Código de status: 200 (OK) se o(s) cliente(s) for(em) encontrado(s), ou 404 (Não encontrado) se nenhum cliente estiver associado ao parâmetro informado.
+* Corpo da resposta: Uma lista de objetos JSON representando o(s) cliente(s) encontrado(s).
+Exemplo de resposta (sucesso):
+
+```json
+[
+  {
+    "cpf": "12345678900",
+    "nome": "João Silva",
+    "email": "joao@example.com",
+    "data_nasc": "1990-01-15",
+    "cep": "12345-678",
+    "numero_casa": 100,
+    "rua": "Rua das Flores",
+    "bairro": "Centro",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  }
+]
+```
+
+**Exemplo de resposta (falha):**
+```json
+{
+  "message": "Cliente(s) não encontrado."
+}
+```
+
+### Inserir Cliente
+**Descrição:** Esta rota permite criar um novo cliente e salvá-lo no banco de dados.
+
+**Método HTTP:** POST
+
+**URL:** ```/api/clientes```
+
+**Corpo da Requisição (em formato JSON):**
+```json
+{
+  "cpf": "12345678900",
+  "nome": "João Silva",
+  "email": "joao@example.com",
+  "data_nasc": "1990-01-15",
+  "cep": "12345-678",
+  "numero_casa": 100,
+  "rua": "Rua das Flores",
+  "bairro": "Centro",
+  "cidade": "São Paulo",
+  "estado": "SP"
+}
+```
+
+**Resposta:**
+
+* Código de status: 201 (Criado) se o cliente for criado com sucesso.
+* Corpo da resposta: Uma mensagem de sucesso.
+
+**Exemplo de resposta (sucesso):**
+```json
+{
+  "message": "Cliente criado com sucesso"
+}
+```
+
+**Exemplo de resposta (falha):**
+```json
+{
+  "error": "cpf, nome e email são campos obrigatórios"
+}
+```
+
+### Atualizar Cliente
+**Descrição:** Esta rota permite atualizar os dados de um cliente específico.
+
+**Método HTTP:** PUT
+
+**URL:** /api/clientes/<cpf>
+
+**Parâmetros:**
+
+* `<cpf>`: O CPF do cliente que se deseja atualizar.
+
+**Corpo da Requisição (em formato JSON):**
+```json
+{
+  "nome": "João Silva",
+  "email": "joao@example.com",
+  "data_nasc": "1990-01-15",
+  "cep": "12345-678",
+  "numero_casa": 120
+}
+```
+
+**Resposta:**
+
+* Código de status: 200 (OK) se o cliente for atualizado com sucesso.
+* Corpo da resposta: Uma mensagem de sucesso.
+
+**Exemplo de resposta (sucesso):**
+```json
+{
+  "message": "Cliente atualizado com sucesso"
+}
+```
+
+**Exemplo de resposta (falha):**
+```json
+{
+  "error": "Cliente não encontrado"
+}
+```
+
+## Documentação da API de Contas
+
+A API de Contas é uma interface para gerenciar informações de contas bancárias em um sistema. Abaixo estão listadas as rotas disponíveis na API, suas descrições e exemplos de uso.
+
+### Listar Contas
+
+**Descrição**: Esta rota permite listar todas as contas cadastradas no sistema.
+
+**Método HTTP**: GET
+
+**URL**: `/api/contas`
+
+**Resposta**:
+* Código de status: 200 (OK)
+* Corpo da resposta: Uma lista de objetos JSON representando as contas cadastradas.
+
+**Exemplo de resposta**:
+```json
+[
+  {
+    "numero": 12345,
+    "cliente_conta": "12345678900",
+    "saldo": 1000.00,
+    "limite_mov": 2000.00
+  },
+  {
+    "numero": 54321,
+    "cliente_conta": "98765432100",
+    "saldo": 500.00,
+    "limite_mov": 1000.00
+  }
+]
+```
+
+### Obter Conta por Parâmetro
+**Descrição:** Esta rota permite obter uma conta ou contas com base em um parâmetro (número da conta ou CPF do cliente).
+
+**Método HTTP:** GET
+
+**URL:** ```/api/contas/<parametro>```
+
+**Parâmetros:**
+
+* `<parametro>`: O valor do parâmetro pelo qual se deseja obter a(s) conta(s), pode ser o numero da conta ou o cpf do cliente (no segundo caso pode retornar mais de uma conta).
+
+**Resposta:**
+
+* Código de status: 200 (OK) se a(s) conta(s) for(em) encontrado(s), ou 404 (Não encontrado) se nenhuma conta estiver associada ao parâmetro informado.
+* Corpo da resposta: Uma lista de objetos JSON representando a(s) conta(s) encontrada(s).
+
+**Exemplo de resposta (sucesso):**
+```json
+[
+  {
+    "numero": 12345,
+    "cliente_conta": "12345678900",
+    "saldo": 1000.00,
+    "limite_mov": 2000.00
+  }
+]
+```
+
+**Exemplo de resposta (falha):**
+```json
+{
+  "message": "Conta(s) não encontrada."
+}
+```
+
+### Inserir Conta
+**Descrição:** Esta rota permite criar uma nova conta e salvá-la no banco de dados.
+
+**Método HTTP:** POST
+
+**URL:** ```/api/contas```
+
+**Corpo da Requisição (em formato JSON):**
+```json
+{
+  "numero": 12345,
+  "cliente_conta": "12345678900",
+  "saldo": 1000.00,
+  "limite_mov": 2000.00,
+  "senha": "senha123"
+}
+```
+
+**Resposta:**
+
+* Código de status: 201 (Criado) se a conta for criada com sucesso.
+* Corpo da resposta: Uma mensagem de sucesso.
+
+**Exemplo de resposta (sucesso):**
+```json
+{
+  "message": "Conta criada com sucesso"
+}
+```
+
+**Exemplo de resposta (falha):**
+```json
+{
+  "error": "numero, cliente_conta, saldo e senha são campos obrigatórios"
+}
+```
+
+### Atualizar Conta
+**Descrição:** Esta rota permite atualizar os dados de uma conta específica.
+
+**Método HTTP:** PUT
+
+**URL:** ```/api/contas/<numero>```
+
+**Parâmetros:**
+
+* `<numero>`: O número da conta que se deseja atualizar.
+
+**Corpo da Requisição (em formato JSON):**
+```json
+{
+  "saldo": 1200.00,
+  "limite_mov": 2500.00
+}
+```
+
+**Resposta:**
+
+* Código de status: 200 (OK) se a conta for atualizada com sucesso.
+* Corpo da resposta: Uma mensagem de sucesso.
+
+**Exemplo de resposta (sucesso):**
+```json
+{
+  "message": "Conta atualizada com sucesso"
+}
+```
+
+**Exemplo de resposta (falha):**
+```json
+{
+  "error": "Conta não encontrada"
+}
+```
