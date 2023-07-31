@@ -86,7 +86,7 @@ A entidade "Conta" possui os seguintes atributos:
 3. **Limite de movimentação**
 4. **Senha**
 
-A conta possui um relacionamento de 1 para N com a entidade "Movimentação". A movimentação é uma entidade fraca em relação à conta, ou seja, a movimentação só existe se a conta existir, e uma conta pode ter 1 ou mais movimentações.
+A conta possui um relacionamento de 1 para N com a entidade "Movimentação". Lembrando que a movimentação é uma entidade fraca em relação à conta.
 
 ***Movimentação:***
 A entidade "Movimentação" possui os seguintes atributos:
@@ -118,7 +118,7 @@ A tabela de cliente possui uma diferença entre o Modelo Entidade-Relacionamento
 - **Saldo:** não nulo
 - **Senha:** não nula
 
-A tabela de conta possui uma chave primária e uma chave estrangeira relacionando-a à tabela cliente através do CPF, que é a chave primária do cliente. Além disso, os atributos cliente, saldo e senha não podem ser nulos.
+A tabela de conta possui uma chave primária e uma chave estrangeira relacionada à tabela cliente através do CPF, que é a chave primária do cliente. Além disso, os atributos cliente, saldo e senha não podem ser nulos.
 
 ***Movimentações:***
 - **Data e hora da movimentação:** chave composta (juntamente com o número da conta)
@@ -131,7 +131,7 @@ Nesse tópico será comentado o desenvolvimento dos códigos DDL e DML.
 
 ### DDL (Data Definition Language)
 São os comandos que interagem com os objetos do banco. EX: CREATE, ALTER e DROP.
-Para isso foram criados os códigos que criam as tabelas utilizadas: cliente, conta, telefones e movimentacao
+Para isso foram criados os códigos que criam as tabelas utilizadas: cliente, conta, telefones e movimentacao, o qual pode ser encontrado na pasta */ddl_dml/ddl.sql*.
 
 Nesse código foi criado as tabelas e utilizado os *constraints* para manutenção dos dados e para especificação de algumas regras, como por exemplo:
 ```sql
@@ -145,9 +145,11 @@ Um outro constraint pouco diferente que foi utilizado foi na tabela de movimenta
 CONSTRAINT tipo_movimentacao CHECK (LOWER(tipo) IN ('d', 's')),
 ```
 
+Esses foram so constraints mais usados ao  longo do código.
+
 ### DML (Data Manipulation Language) 
 São os comandos que interagem com os dados dentro das tabelas. EX: INSERT, DELETE e UPDATE. 
-Para isso foram criados códigos que inserem, atualizam e excluem dados das tabelas. 
+Para isso foram criados códigos que inserem, atualizam e excluem dados das tabelas, e pode ser encontrado na pasta */ddl_dml/dml.sql*
 
 Para esse código não há nada a comentar mais profundamente, já que é apenas consultas, inserções e atualizações feitas para teste.
 
@@ -196,7 +198,6 @@ python3 run_ddl_dml.py
 ```
 
 # Documentação
-Nesse tópico será mostrado as rotas criadas e o que é necessário para chama-las.
 
 ## Documentação API telefones
 ### Listar telefones
@@ -541,9 +542,7 @@ Nesse tópico será mostrado as rotas criadas e o que é necessário para chama-
 }
 ```
 
-## Documentação API de cliente
-
-A API de Clientes é uma interface para gerenciar informações dos clientes em um sistema. Abaixo estão listadas as rotas disponíveis na API, suas descrições e exemplos de uso.
+## Documentação API cliente
 
 ### Listar Clientes
 
@@ -741,9 +740,7 @@ Exemplo de resposta (sucesso):
 }
 ```
 
-## Documentação da API de Contas
-
-A API de Contas é uma interface para gerenciar informações de contas bancárias em um sistema. Abaixo estão listadas as rotas disponíveis na API, suas descrições e exemplos de uso.
+## Documentação da API Contas
 
 ### Listar Contas
 
@@ -916,11 +913,11 @@ A API de Contas é uma interface para gerenciar informações de contas bancári
 ```
 
 # Conclusão e considerações
-Para esse projeto foi desenvolvido um banco de dados relacional utilizando a linguagem de programação python e o banco postgresql. As bibliotecas utilizadas foram psycopg2 e sqlAlchemy para manipulação dos dados nas tabelas.
+Para esse projeto foi desenvolvido um banco de dados relacional utilizando a linguagem de programação **python** e o banco **postgresql**. As bibliotecas utilizadas foram **psycopg2** e **sqlAlchemy** para manipulação dos dados no banco.
 
-Para que isso fosse possível foi desenvolvido a modelagem do banco anteriormente, criando o modelo entidade relacionamento e o diagrama entidade relacionamento, e, também os códigos DDL e DML que criam e testam o banco.
+Para que isso fosse possível foi desenvolvido a modelagem do banco anteriormente, criando o modelo entidade relacionamento e o diagrama entidade relacionamento, e, também os códigos DDL e DML.
 
-Ao final, foi possível obter um banco de dados funcional, porém, há algumas considerações que podem ser feitas:
+Ao final, foi possível obter um banco de dados funcional, porém, há algumas considerações que poderiam ser feitas mais a frente com a continuação do desenvolvimento:
 1. **Encriptar a senha da conta:** isso deixa o sistema mais seguro
 2. **Alterar o tipo de movimentação:** adicionar os tipos de pix, transferência bancária, etc, para que o servidor fique mais completo.
 3. **Criação de mais rotas:** nesse momento existe apenas as rotas de CRUD das entidades, assim, para utilizar ele deverão ser feitas outras rotas, como, por exemplo, login na conta, fazer transferência etc.
