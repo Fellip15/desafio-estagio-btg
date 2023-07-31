@@ -1,73 +1,130 @@
-# Desafio estágio BTG Pactual
+# Desafio de Estágio BTG - Modelagem de Banco de Dados Relacional
 
 ## Introdução
 
-Nesse repositório será desenvolvido o desafio de estágio no processo do BTG, que consiste em modelar um banco de dados relacional com os seguintes dados das entidades:
-* Dados do cliente
-* Dados da conta
-* Dados de movimentação (apenas depósitos e saques)
+Bem-vindo(a) ao desafio de estágio no processo do BTG! Neste repositório será desenvolvido um banco de dados relacional com informações importantes sobre três entidades: cliente, conta e movimentação (depósitos e saques).
 
-Após isso, serão entregues alguns artefatos, os quais são:
-* Diagrama Entidade Relacionamento
-* Modelo Entidade Relacionamento
-* Scripts DDL e DML (opcional para front)
-* API (opcional para front):
-  * Cadastro/atualização de conta/cliente
-  * Cadastro de movimentações
-  * Consulta por conta/cliente
-  * Consulta por movimentações de uma conta
+### Artefatos a serem entregues
+
+Temos 4 artefatos que devem ser entregues:
+
+1. **Diagrama Entidade Relacionamento:** Representação gráfica da estrutura das entidades e suas conexões.
+
+2. **Modelo Entidade Relacionamento:** Descrição detalhada da estrutura das entidades, incluindo atributos e relacionamentos.
+
+3. **Scripts DDL e DML (opcional para front-end):** Comandos para criação do banco de dados (Data Definition Language) e inserção de dados (Data Manipulation Language).
+
+4. **API (opcional para front-end):** Desenvolvimento de uma API com as seguintes funcionalidades:
+   - Cadastro/atualização de contas e clientes.
+   - Cadastro de movimentações.
+   - Consulta por conta/cliente.
+   - Consulta por movimentações de uma conta.
 
 ## Modelagem do banco de dados
 
 Após uma breve análise foi possível chegar a conclusão de quais dados devem ser armazenados para cada entidade e quais as entidades que serão criadas para esse banco de dados. As entidades serão: cliente, conta e movimentação, sendo que a movimentação é uma entidade que deriva do relacionamento entre contas, ou seja, as relações que geram os depósitos e saques.
 
-### Dados das entidades
-#### Cliente:
-Para o cliente, será necessário armazenar os dados:
-* CPF: string (chave primária)
-* Nome completo: string
-* Endereço: atributo composto
-* Email: string
-* Data de nascimento: string
-* Telefones de contato: multivalorado
+### Dados das Entidades
 
-Sendo que, o cliente é uma entidade forte, ou seja, independe das outras para existir, possui sentido por si só.
+#### Cliente:
+
+Para o cliente, serão armazenados os seguintes dados:
+
+- **CPF:** string (chave primária)
+- **Nome completo:** string
+- **Endereço:** atributo composto
+- **Email:** string
+- **Data de nascimento:** string
+- **Telefones de contato:** multivalorado
+
+O cliente é uma entidade forte, ou seja, independe das outras para existir, possuindo sentido por si só.
 
 #### Conta:
-Já para a conta, é impensindível armazenar os seguintes dados:
-* Número da conta: chave primária
-* Saldo: big decimal
-* Limite de movimentação: big unsigned decimal
-* Senha: string
+
+Os dados essenciais a serem armazenados para a conta são:
+
+- **Número da conta:** chave primária
+- **Saldo:** big decimal
+- **Limite de movimentação:** big unsigned decimal
+- **Senha:** string
 
 A conta também será uma entidade forte.
 
 #### Movimentações:
-É a entidade menos complexa do banco de dados:
-* Valor da movimentação: big decimal
-* Tipo da movimentação: string pré definida (saque, depósito)
-* Data e hora da movimentação: string
 
-Essa entidade é fraca, possuindo sentido apenas se existir contas, pois só existem movimentações se também houver contas.
+A entidade "Movimentações" é a menos complexa do banco de dados e contém os seguintes atributos:
+
+- **Valor da movimentação:** big decimal
+- **Tipo da movimentação:** string pré-definida (saque, depósito)
+- **Data e hora da movimentação:** string
+
+Essa entidade é fraca, possuindo sentido apenas se existirem contas, pois só existem movimentações se também houver contas.
 
 ## Diagramas
 ### MER
-Para a construção do MER (Modelo Entidade Relacionamemto) foram considerados os dados falados anteriormente.
+Para a construção do MER (Modelo Entidade Relacionamemto) foram considerados os dados falados anteriormente, assim, foi possível chegar no seguinte modelo:
+
 <img src="Diagramas/MER.jpg" alt="MER"/>
-Dessa forma, analisando o modelo desenolvido, podemos dizer que o cliente possui CPF (chave primária), Endereço (o qual é um atributo composto, que pode ser derivado em CEP, número da casa, rua, bairro, cidade e estado), nome, email, data de nascimento e telefones para contato (atributo multivalorado, ou seja, podem ser um array com vários valores). O cliente possui uma relação de 1 para N com as contas, ou seja, um cliente possui uma ou mais contas.
 
-Além disso, temos a entidade conta, a qual possui um número da conta (chave primária), o saldo que ela possui, o limite das movimentações que o cliente pode fazer e a senha que é necessária para conectar nela. A conta possui um relacionametno de 1 para N com a movimentação, além da movimentação ser uma entidade fraca em relação à conta, ou seja, a movimentação só existe se a conta existir e uma conta pode ter 1 ou mais movimentações.
+***Cliente:***
+Analisando o modelo desenvolvido, podemos ver que o cliente possui os seguintes atributos:
 
-E ainda, descrevendo a entidade movimentação: ela possui um valor que foi movimentado, o tipo da movimentação e a data hora, a qual será a chave primária (além do número da conta que é necessário utilizar já que a movimetação é ligada a uma conta).
+1. **CPF:** chave primária
+2. **Endereço:** atributo composto (pode ser derivado em CEP, número da casa, rua, bairro, cidade e estado)
+3. **Nome**
+4. **Email**
+5. **Data de nascimento**
+6. **Telefones de contato:** atributo multivalorado (pode ser um array com vários valores)
+
+O cliente possui uma relação de 1 para N com as contas, ou seja, um cliente pode ter uma ou mais contas.
+
+***Conta:***
+A entidade "Conta" possui os seguintes atributos:
+
+1. **Número da conta:** chave primária
+2. **Saldo**
+3. **Limite de movimentação**
+4. **Senha**
+
+A conta possui um relacionamento de 1 para N com a entidade "Movimentação". A movimentação é uma entidade fraca em relação à conta, ou seja, a movimentação só existe se a conta existir, e uma conta pode ter 1 ou mais movimentações.
+
+***Movimentação:***
+A entidade "Movimentação" possui os seguintes atributos:
+
+1. **Valor movimentado**
+2. **Tipo de movimentação**
+3. **Data e hora da movimentação:** chave primária (além do número da conta, que será necessário, já que a movimentação está ligada a uma conta)
+
+Com isso, temos uma representação básica do nosso banco de dados e o seu funcionamento, facilitando o seu desenvolvimento mais a frente.
 
 ### DER
 Após a criação do MER foi criado o DER (Diagrama de entidade relacionamento), o qual mostrará mais claramente como o banco irá ser montado.
 <img src="Diagramas/DER.jpg" alt="DER"/>
-É possível notar que o cliente possui a chave primária CPF, e também que os valores do nome e do email desse cliente não podem ser nulos, já os outros campos são opcionais de acordo com cada serviço utilizado, como, por exemplo, se o cliente for fazer um pedido de cartão é necessário incluir o endereço. A diferença entre o cliente do MER e do DER é que no DER ele não possui o atributo telefones, pois, como ele é um atributo multivalorado foi escolhido criar uma tabela separada para que a manupulação dos telefones fique mais completa, assim, cada usuário possui um ou mais telefones. Vale notar que a tabela telefone possui uma chave composta, em que cliente é uma chave estrageira ligada ao cliente e telefone é o próprio telefone dele.
 
-A tabela de conta possuí a chave primária e também uma chave estrangeira, ligada também à tabela cliente, pelo cpf que é a chave primária do cliente. Além de não permitir que o cliente, o saldo e a senha sejam nulos.
+Com esse diagramas podemos chegar a uma forma mais completa do nosso banco:
 
-Por último ficou a tabela de movimentações, a qual possui uma chave composta, sendo a data e hora da movimentação e o número da conta, a qual é uma chave estrangeira para a tabela de contas.
+***Cliente:***
+- **CPF:** chave primária
+- **Nome:** não nulo
+- **Email:** não nulo
+- **Endereço:** opcional (depende dos serviços utilizados)
+- **Data de nascimento:** opcional (depende dos serviços utilizados)
+
+A tabela de cliente possui uma diferença entre o Modelo Entidade-Relacionamento (MER) e o Diagrama Entidade-Relacionamento (DER). No DER, o atributo telefones não aparece diretamente na tabela de cliente, pois, sendo um atributo multivalorado, foi escolhido criar uma tabela separada para melhor manipulação. Assim, cada cliente pode ter um ou mais telefones. A tabela telefone possui uma chave composta, em que o CPF do cliente é uma chave estrangeira ligada ao cliente e o telefone é o próprio número de telefone.
+
+***Conta:***
+- **Número da conta:** chave primária
+- **CPF do cliente:** chave estrangeira ligada à tabela cliente (garante que a conta está associada a um cliente existente)
+- **Saldo:** não nulo
+- **Senha:** não nula
+
+A tabela de conta possui uma chave primária e uma chave estrangeira relacionando-a à tabela cliente através do CPF, que é a chave primária do cliente. Além disso, os atributos cliente, saldo e senha não podem ser nulos.
+
+***Movimentações:***
+- **Data e hora da movimentação:** chave composta (juntamente com o número da conta)
+- **Número da conta:** chave estrangeira ligada à tabela conta (garante que a movimentação está associada a uma conta existente)
+
+A tabela de movimentações possui uma chave composta, onde a data e hora da movimentação e o número da conta formam a chave primária. O número da conta é uma chave estrangeira, que está ligada à tabela de conta.
 
 ## DDL e DML
 Nesse tópico será comentado o desenvolvimento dos códigos DDL e DML.
@@ -105,7 +162,7 @@ Após isso, é indispensável instalar o mysqlclient e o psycopg2 (biblioteca do
 pip3 install mysqlclient
 pip3 install psycopg2
 ```
-Com isso, é possível instalar a última biblioteca que foi utilizada para mapear as tabelas e rodar as query's, sqlalchemy:
+Com isso, é possível instalar a última biblioteca utilizada para mapear as tabelas e rodar as query's, sqlalchemy:
 ```bash
 pip install flask psycopg2-binary SQLAlchemy
 pip install Flask-SQLAlchemy
@@ -114,7 +171,7 @@ Ao final desses passos, o ambiente deve estar tudo ok, assim, basta apenas inici
 ```bash
 sudo service postgresql start
 ```
-Além disso, vale lembrar que deve ser configurado, o arquivo *api/config.py*:
+Além disso, vale lembrar que deve ser configurado o arquivo *api/config.py*:
 ```python
 DATABASE = 'nome_banco_dados'
 DB_USERNAME = 'nome_usuario'
@@ -212,7 +269,7 @@ Nesse tópico será mostrado as rotas criadas e o que é necessário para chama-
 
 **URL:** ```/api/telefones```
 
-Corpo da Requisição (em formato JSON):
+**Corpo da Requisição (em formato JSON):**
 ```json
 {
   "cliente_tel": "12345678900",
@@ -287,12 +344,12 @@ Corpo da Requisição (em formato JSON):
 **Parâmetros da URL:**
 
 * `<cliente_tel>`: O CPF do cliente dono do telefone que se deseja excluir.
-* `<telefone>`: O número de telefone que se deseja excluir.
+* `<telefone>`: O número de telefone que deseja excluir.
 
 **Resposta:**
 
-* Código de status: 200 (OK) se o telefone for excluído com sucesso.
-* Corpo da resposta: Uma mensagem de sucesso.
+* Código de status: 200 (OK) se o telefone for excluído com sucesso ou 400 se o telefone não for encontrado.
+* Corpo da resposta: Uma mensagem de sucesso ou erro.
 
 **Exemplo de resposta (sucesso):**
 ```json
@@ -309,7 +366,6 @@ Corpo da Requisição (em formato JSON):
 ```
 
 ## Documentação API movimentações
-A API de Movimentações é uma interface para gerenciar as movimentações financeiras associadas a contas em um sistema. Abaixo estão listadas as rotas disponíveis na API, suas descrições e exemplos de uso.
 
 ### Listar Movimentações
 **Descrição:** Esta rota permite listar todas as movimentações registradas no sistema.
@@ -377,7 +433,7 @@ A API de Movimentações é uma interface para gerenciar as movimentações fina
 **Exemplo de resposta (falha):**
 ```json
 {
-  "message": "Movimentação(s) não encontrada(s)."
+  "error": "Movimentação(s) não encontrada(s)."
 }
 ```
 
