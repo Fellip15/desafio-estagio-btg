@@ -160,11 +160,11 @@ Nesse tópico será mostrado as rotas criadas e o que é necessário para chama-
 [
   {
     "cliente_tel": "12345678900",
-    "telefone": "(11) 98765-4321"
+    "telefone": "11987654321"
   },
   {
     "cliente_tel": "98765432100",
-    "telefone": "(21) 98765-4321"
+    "telefone": "21987654321"
   }
 ]
 ```
@@ -189,11 +189,11 @@ Nesse tópico será mostrado as rotas criadas e o que é necessário para chama-
 [
   {
     "cliente_tel": "12345678900",
-    "telefone": "(11) 98765-4321"
+    "telefone": "11987654321"
   },
   {
     "cliente_tel": "12345678900",
-    "telefone": "(11) 91234-5678"
+    "telefone": "11912345678"
   }
 ]
 ```
@@ -216,7 +216,7 @@ Corpo da Requisição (em formato JSON):
 ```json
 {
   "cliente_tel": "12345678900",
-  "telefone": "(11) 98765-4321"
+  "telefone": "11987654321"
 }
 ```
 
@@ -253,8 +253,8 @@ Corpo da Requisição (em formato JSON):
 
 ```json
 {
-  "cliente_tel": "12345678900",
-  "telefone": "1191234-5678"
+  "cliente_tel": "123.456.789-00",
+  "telefone": "11912345678"
 }
 ```
 
@@ -360,13 +360,13 @@ A API de Movimentações é uma interface para gerenciar as movimentações fina
 ```json
 [
   {
-    "data_hora": "2023-07-30 09:15:00",
+    "data_hora": "2023-07-30T09:15:00",
     "conta_mov": 12345,
     "valor": 100.00,
     "tipo": "d"
   },
   {
-    "data_hora": "2023-07-30 13:30:00",
+    "data_hora": "2023-07-30T13:30:00",
     "conta_mov": 12345,
     "valor": 50.00,
     "tipo": "s"
@@ -391,7 +391,7 @@ A API de Movimentações é uma interface para gerenciar as movimentações fina
 **Corpo da Requisição (em formato JSON):**
 ```json
 {
-  "data_hora": "2023-07-30 09:15:00",
+  "data_hora": "2023-07-30T09:15:00",
   "conta_mov": 12345,
   "valor": 100.00,
   "tipo": "d"
@@ -505,7 +505,7 @@ A API de Clientes é uma interface para gerenciar informações dos clientes em 
 ```json
 [
   {
-    "cpf": "12345678900",
+    "cpf": "123.456.789-00",
     "nome": "João Silva",
     "email": "joao@example.com",
     "data_nasc": "1990-01-15",
@@ -517,7 +517,7 @@ A API de Clientes é uma interface para gerenciar informações dos clientes em 
     "estado": "SP"
   },
   {
-    "cpf": "98765432100",
+    "cpf": "987.654.321-00",
     "nome": "Maria Souza",
     "email": "maria@example.com",
     "data_nasc": "1985-05-20",
@@ -551,7 +551,7 @@ Exemplo de resposta (sucesso):
 ```json
 [
   {
-    "cpf": "12345678900",
+    "cpf": "123.456.789-00",
     "nome": "João Silva",
     "email": "joao@example.com",
     "data_nasc": "1990-01-15",
@@ -582,7 +582,7 @@ Exemplo de resposta (sucesso):
 **Corpo da Requisição (em formato JSON):**
 ```json
 {
-  "cpf": "12345678900",
+  "cpf": "123.456.789-00",
   "nome": "João Silva",
   "email": "joao@example.com",
   "data_nasc": "1990-01-15",
@@ -706,13 +706,13 @@ A API de Contas é uma interface para gerenciar informações de contas bancári
 [
   {
     "numero": 12345,
-    "cliente_conta": "12345678900",
+    "cliente_conta": "123.456.789-00",
     "saldo": 1000.00,
     "limite_mov": 2000.00
   },
   {
     "numero": 54321,
-    "cliente_conta": "98765432100",
+    "cliente_conta": "987.654.321-00",
     "saldo": 500.00,
     "limite_mov": 1000.00
   }
@@ -740,7 +740,7 @@ A API de Contas é uma interface para gerenciar informações de contas bancári
 [
   {
     "numero": 12345,
-    "cliente_conta": "12345678900",
+    "cliente_conta": "123.456.789-00",
     "saldo": 1000.00,
     "limite_mov": 2000.00
   }
@@ -765,7 +765,7 @@ A API de Contas é uma interface para gerenciar informações de contas bancári
 ```json
 {
   "numero": 12345,
-  "cliente_conta": "12345678900",
+  "cliente_conta": "123.456.789-00",
   "saldo": 1000.00,
   "limite_mov": 2000.00,
   "senha": "senha123"
