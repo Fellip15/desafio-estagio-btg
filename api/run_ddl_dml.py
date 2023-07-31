@@ -12,15 +12,19 @@ def execute_sql_file(filename):
     with open(filename, 'r') as file:
         commands = file.read()
 
+    # conecta no banco
     connection = psycopg2.connect(**db_config)
     cursor = connection.cursor()
 
     try:
+        # executa e commita as mudanças
         cursor.execute(commands)
         connection.commit()
+
         print(f"Comandos do arquivo '{filename}' executados.")
     except Exception as e:
         connection.rollback()
+
         print(f"Erro ao executar os comandos do arquivo '{filename}', erro: {e}")
 
     cursor.close()

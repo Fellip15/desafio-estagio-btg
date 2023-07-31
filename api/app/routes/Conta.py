@@ -12,7 +12,7 @@ conta_bp = Blueprint('conta', __name__)
     Rota de contas que retorna todas as contas presentes no banco de dados
 """
 @conta_bp.route('/api/contas', methods=['GET'])
-def listar_clientes():
+def listar_contas():
     contas = Conta.query.all()
 
     return jsonify([c.as_dict() for c in contas])
