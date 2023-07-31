@@ -33,13 +33,13 @@ def obter_conta_parametro_url(parametro):
     contas = Conta.query.filter(or_(Conta.numero == parametro_int, Conta.cliente_conta.like(parametro))).all()
 
     if len(contas) <= 0:
-        return jsonify({'message': "Conta(s) não encontrada."})
+        return jsonify({'error': "Conta(s) não encontrada."})
     
     return jsonify([conta.as_dict() for conta in contas]), 200
 
 """
     Cria uma conta e salva no banco de dados
-    Campos obrigatórios: numero, cliente_conta (cpf do dono da conta), saldo
+    Campos obrigatórios no body: numero, cliente_conta (cpf do dono da conta), saldo
 """
 @conta_bp.route('/api/contas', methods=['POST'])
 def inserir_conta():
@@ -80,6 +80,8 @@ def atualizar_conta(numero):
         return jsonify({'error': 'Conta não encontrada'}), 400
 
     data = request.get_json()
+
+    # Seta os atributos novos para os valores que foram passados no body (!= None)
     for key in data.keys():
         if data[key] is not None and key in Conta.__table__.columns.keys():
             setattr(conta, key, data[key])
@@ -90,3 +92,22 @@ def atualizar_conta(numero):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Erro ao atualizar conta. Detalhes: ' + str(e)}), 500
+
+"""
+    Exclui uma conta
+    Parâmetro do url: numero (numero da conta)
+"""
+@conta_bp.route('/api/contas/<numero>', methods=['DELETE'])
+def excluir_conta(numero):
+    conta = Conta.query.get(numero)
+
+    if conta is None:
+        return jsonify({'error': 'Conta não encontrada'}), 404
+
+    try:
+        db.session.delete(conta)
+        db.session.commit()
+        return jsonify({'message': 'Conta excluída com sucesso'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Erro ao excluir conta. Detalhes: ' + str(e)}), 500

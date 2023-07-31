@@ -20,7 +20,7 @@ VALUES (123456789, '123.456.789-00', 1500.00, 500.00, 'minha_senha_secreta');
 
 /*Cria uma movimentação*/
 INSERT INTO movimentacao (valor, tipo, data_hora, conta_mov)
-VALUES (200.00, 'd', '2023-07-29 14:30:00', 123456789);
+VALUES (200.00, 'd', '2023-07-29T14:30:00', 123456789);
 
 /*Atualiza o saldo na conta*/
 UPDATE conta
@@ -63,7 +63,7 @@ WHERE numero = 123456789;
 
 /*Realizar uma movimentação do tipo saque*/
 INSERT INTO movimentacao (valor, tipo, data_hora, conta_mov)
-VALUES (100.00, 's', '2023-07-29 15:45:00', 123456789);
+VALUES (100.00, 's', '2023-07-29T15:45:00', 123456789);
 
 /*Seleciona todos os clientes que possuem contas com saldo acima de 1000.00:*/
 SELECT c.nome, c.cpf
@@ -74,7 +74,7 @@ WHERE co.saldo > 1000.00;
 /*Seleciona todas as movimentações realizadas em uma data e em uma conta*/
 SELECT valor, tipo, data_hora
 FROM movimentacao
-WHERE data_hora >= '2023-07-29 00:00:00' AND data_hora < '2023-07-30 00:00:00'
+WHERE data_hora >= '2023-07-29T00:00:00' AND data_hora < '2023-07-30T00:00:00'
 AND conta_mov = 123456789;
 
 /*Excluir um cliente e todas as suas informações*/

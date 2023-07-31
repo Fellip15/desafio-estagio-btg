@@ -27,13 +27,13 @@ def obter_movimentacoes_conta(conta):
     movimentacoes = Movimentacao.query.filter_by(conta_mov=conta).all()
 
     if len(movimentacoes) <= 0:
-        return jsonify({'message': "Telefone(s) não encontrado(s)."})
+        return jsonify({'error': "Telefone(s) não encontrado(s)."})
     
     return jsonify([movimentacao.as_dict() for movimentacao in movimentacoes]), 200
 
 """
     Cria uma movimentação
-    Parâmetros obrigatórios: data_hora, conta_mov, valor e tipo
+    Parâmetros obrigatórios do body: data_hora, conta_mov, valor e tipo
 """
 @movimentacao_bp.route('/api/movimentacoes', methods=['POST'])
 def inserir_movimentacao():
@@ -44,6 +44,7 @@ def inserir_movimentacao():
     valor = data.get('valor')
     tipo = data.get('tipo')
 
+    # Verificar se todos os campos obrigatórios foram fornecidos
     if not data_hora or not conta_mov or not valor or not tipo:
         return jsonify({'error': 'data_hora, conta_mov, valor e tipo são campos obrigatórios'}), 400
 
@@ -61,8 +62,8 @@ def inserir_movimentacao():
 
 """
     Atualiza uma movimentação
-    Parâmetros de url: conta_mov e data_hora
-    parametros para atualizacao: valor e tipo
+    Parâmetros de url: conta_mov (numero da conta) e data_hora
+    parametros obrigatórios do body: valor e tipo
 """
 @movimentacao_bp.route('/api/movimentacoes/<data_hora>/<int:conta_mov>', methods=['PUT'])
 def atualiza_movimentacao(data_hora, conta_mov):
@@ -94,4 +95,22 @@ def atualiza_movimentacao(data_hora, conta_mov):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Erro ao atualizar movimentação. Detalhes: ' + str(e)}), 500
-    
+
+"""
+    Exclui uma movimentação
+    Parâmetros da url: data_hora e conta_mov (numero da conta)
+"""
+@movimentacao_bp.route('/api/movimentacoes/<data_hora>/<conta_mov>', methods=['DELETE'])
+def excluir_movimentacao(data_hora, conta_mov):
+    movimentacao = Movimentacao.query.get((data_hora, conta_mov))
+
+    if movimentacao is None:
+        return jsonify({'error': 'Movimentação não encontrada'}), 404
+
+    try:
+        db.session.delete(movimentacao)
+        db.session.commit()
+        return jsonify({'message': 'Movimentação excluída com sucesso'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Erro ao excluir movimentação. Detalhes: ' + str(e)}), 500

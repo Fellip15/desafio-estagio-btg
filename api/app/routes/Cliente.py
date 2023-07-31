@@ -9,7 +9,7 @@ from app.models.Cliente import Cliente
 cliente_bp = Blueprint('cliente', __name__)
 
 """
-    Retorna todos os cliente do banco de dados
+    Retorna todos os clientes do banco de dados
 """
 @cliente_bp.route('/api/clientes', methods=['GET'])
 def listar_clientes():
@@ -19,7 +19,7 @@ def listar_clientes():
 
 """
     Retorna um ou mais clientes
-    Parâmetro de url: parametro -> nome, email ou cpf
+    Parâmetro de url: parametro (nome, email ou cpf)
     no caso da busca por nome o retorno pode ser mais de um cliente
 """
 @cliente_bp.route('/api/clientes/<parametro>', methods=['GET'])
@@ -27,13 +27,13 @@ def obter_cliente_parametro_url(parametro):
     clientes = Cliente.query.filter(or_(Cliente.cpf.like(parametro), Cliente.nome.contains(parametro), Cliente.email.like(parametro))).all()
 
     if len(clientes) <= 0:
-        return jsonify({'message': "Cliente(s) não encontrado."})
+        return jsonify({'error': "Cliente(s) não encontrado."})
     
     return jsonify([cliente.as_dict() for cliente in clientes]), 200
 
 """
     Cria um cliente e salva no banco de dados
-    Campos obrigatórios: cpf, nome e email
+    Campos obrigatórios do body: cpf, nome e email
     Demais campos são opcionais
 """
 @cliente_bp.route('/api/clientes', methods=['POST'])
@@ -79,6 +79,8 @@ def atualizar_cliente(cpf):
         return jsonify({'error': 'Cliente não encontrado'}), 400
 
     data = request.get_json()
+
+    # Seta os atributos novos para os valores que foram passados no body (!= None)
     for key in data.keys():
         if data[key] is not None and key in Cliente.__table__.columns.keys():
             setattr(cliente, key, data[key])
@@ -89,3 +91,22 @@ def atualizar_cliente(cpf):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Erro ao atualizar cliente. Detalhes: ' + str(e)}), 500
+
+"""
+    Exclui um cliente
+    Parâmetro do body: cpf (cpf do cliente)
+"""
+@cliente_bp.route('/api/clientes/<cpf>', methods=['DELETE'])
+def excluir_cliente(cpf):
+    cliente = Cliente.query.get(cpf)
+
+    if cliente is None:
+        return jsonify({'error': 'Cliente não encontrado'}), 404
+
+    try:
+        db.session.delete(cliente)
+        db.session.commit()
+        return jsonify({'message': 'Cliente excluído com sucesso'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Erro ao excluir cliente. Detalhes: ' + str(e)}), 500
