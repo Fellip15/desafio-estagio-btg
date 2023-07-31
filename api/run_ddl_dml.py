@@ -18,10 +18,10 @@ def execute_sql_file(filename):
     try:
         cursor.execute(commands)
         connection.commit()
-        print(f"Comandos do arquivo '{filename}' executados com sucesso.")
+        print(f"Comandos do arquivo '{filename}' executados.")
     except Exception as e:
         connection.rollback()
-        print(f"Erro ao executar os comandos do arquivo '{filename}': {e}")
+        print(f"Erro ao executar os comandos do arquivo '{filename}', erro: {e}")
 
     cursor.close()
     connection.close()

@@ -1,15 +1,14 @@
-# app/__init__.py
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import SQLALCHEMY_DATABASE_URI
 
+# configuracao do app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'sua_chave_secreta'
 app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 
 db = SQLAlchemy(app)
 
-# Importar rotas
+# blueprint de rotas
 from app.routes.Cliente import cliente_bp
 app.register_blueprint(cliente_bp)
 

@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy.exc import IntegrityError
-from execute_query import execute_query
-from sqlalchemy import and_, or_, not_
+from psycopg2.errors import UniqueViolation
 from app import db
 
 from app.models.Telefones import Telefones
@@ -20,7 +19,7 @@ def listar_telefones():
 """
     Lista todos os telefones de um cliente
     identificado pelo seu cpf
-    Parâmetro do url: cpf (cpf do cliente)
+    Parametro do url: cpf (cpf do cliente)
 """
 @telefones_bp.route('/api/telefones/<cpf>', methods=['GET'])
 def obter_telefone_cpf(cpf):
@@ -33,7 +32,7 @@ def obter_telefone_cpf(cpf):
 
 """
     Insere um telefone
-    Parâmetros obrigatórios do body: cliente_tel (cpf do cliente) e telefone
+    Parametros obrigatorios do body: cliente_tel (cpf do cliente) e telefone
 """
 @telefones_bp.route('/api/telefones', methods=['POST'])
 def inserir_telefone():
@@ -42,7 +41,7 @@ def inserir_telefone():
     cliente_tel = data.get('cliente_tel')
     telefone = data.get('telefone')
 
-    # Verificar se todos os campos obrigatórios foram fornecidos
+    # verifica se todos os campos obrigatórios foram passados
     if not cliente_tel or not telefone:
         return jsonify({'error': 'cliente_tel e telefone são campos obrigatórios'}), 400
 
@@ -51,17 +50,23 @@ def inserir_telefone():
     try:
         db.session.add(novo_telefone)
         db.session.commit()
+
         return jsonify({'message': 'Telefone inserido com sucesso'}), 201
-    except IntegrityError:
+    except IntegrityError as e:
+
+        # verifica se o erro e que ja existe telefone para esse cliente 
+        if isinstance(e.orig, UniqueViolation):
+            return jsonify({'error': f'O telefone {telefone} para o cliente {cliente_tel} já existe'}), 400
         return jsonify({'error': f'O cliente com cpf {cliente_tel} não existe'}), 500
     except Exception as e:
         db.session.rollback()
+
         return jsonify({'error': 'Erro ao inserir telefone. Detalhes: ' + str(e)}), 500
 
 """
     atualiza um telefone
-    parâmetro do url: tel_antigo -> telefone antigo para ser atualizado
-    parâmetros obrigatorios do body: cliente_tel (cpf do cliente) e telefone
+    parametro do url: tel_antigo -> telefone antigo para ser atualizado
+    parametros obrigatorios do body: cliente_tel (cpf do cliente) e telefone
 """
 @telefones_bp.route('/api/telefones/<tel_antigo>', methods=['PUT'])
 def atualiza_telefone(tel_antigo):
@@ -70,6 +75,7 @@ def atualiza_telefone(tel_antigo):
     cliente_tel = data.get("cliente_tel")
     tel_novo = data.get("telefone")
 
+    # verifica se foram passados os campos necessarios para atualizar
     if None in [cliente_tel, tel_novo, tel_antigo]:
         return jsonify({'error': "É necessário mandar o telefone novo, o antigo (url) e o cpf do cliente"}), 400
     
@@ -83,14 +89,16 @@ def atualiza_telefone(tel_antigo):
     
     try:
         db.session.commit()
+
         return jsonify({"message": "Telefone atualizado com sucesso"}), 200
     except Exception as e:
         db.session.rollback()
+
         return jsonify({'error': 'Erro ao atualizar Telefone. Detalhes: ' + str(e)}), 500
 
 """
     Exclui um telefone
-    Parâmetros da url: cliente_tel (cpf do cliente) e telefone
+    Parametros da url: cliente_tel (cpf do cliente) e telefone
 """
 @telefones_bp.route('/api/telefones/<cliente_tel>/<telefone>', methods=['DELETE'])
 def excluir_telefone(cliente_tel, telefone):
@@ -102,7 +110,9 @@ def excluir_telefone(cliente_tel, telefone):
     try:
         db.session.delete(telefone)
         db.session.commit()
+
         return jsonify({'message': 'Telefone excluído com sucesso'}), 200
     except Exception as e:
         db.session.rollback()
+
         return jsonify({'error': 'Erro ao excluir telefone. Detalhes: ' + str(e)}), 500

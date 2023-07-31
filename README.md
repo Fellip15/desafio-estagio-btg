@@ -174,10 +174,10 @@ sudo service postgresql start
 Além disso, vale lembrar que deve ser configurado o arquivo *api/config.py*:
 ```python
 DATABASE = 'nome_banco_dados'
-DB_USERNAME = 'nome_usuario'
-DB_PASSWORD = 'senha_usuario'
-DB_HOST = 'localhost'
-DB_PORT = 5432
+DATABASE_USERNAME = 'nome_usuario'
+DATABASE_PASSWORD = 'senha_usuario'
+DATABASE_HOST = 'localhost'
+DATABASE_PORT = 5432
 ```
 sendo que, localhost e porta é onde o serviço inicializado do postgresql está rodando (esse caminho é o padrão).
 
@@ -914,3 +914,13 @@ A API de Contas é uma interface para gerenciar informações de contas bancári
   "error": "Conta não encontrada"
 }
 ```
+
+# Conclusão e considerações
+Para esse projeto foi desenvolvido um banco de dados relacional utilizando a linguagem de programação python e o banco postgresql. As bibliotecas utilizadas foram psycopg2 e sqlAlchemy para manipulação dos dados nas tabelas.
+
+Para que isso fosse possível foi desenvolvido a modelagem do banco anteriormente, criando o modelo entidade relacionamento e o diagrama entidade relacionamento, e, também os códigos DDL e DML que criam e testam o banco.
+
+Ao final, foi possível obter um banco de dados funcional, porém, há algumas considerações que podem ser feitas:
+1. **Encriptar a senha da conta:** isso deixa o sistema mais seguro
+2. **Alterar o tipo de movimentação:** adicionar os tipos de pix, transferência bancária, etc, para que o servidor fique mais completo.
+3. **Criação de mais rotas:** nesse momento existe apenas as rotas de CRUD das entidades, assim, para utilizar ele deverão ser feitas outras rotas, como, por exemplo, login na conta, fazer transferência etc.

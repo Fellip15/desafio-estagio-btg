@@ -1,6 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
-
 from app import db
+from sqlalchemy.orm import backref
 
 class Conta(db.Model):
     __tablename__ = 'conta'
@@ -11,7 +10,7 @@ class Conta(db.Model):
     limite_mov = db.Column(db.Float)
     senha = db.Column(db.String(32), nullable=False)
 
-    cliente = db.relationship('Cliente', backref='contas')
+    cliente = db.relationship('Cliente', backref=backref("contas", cascade="all, delete-orphan"))
 
     def __repr__(self):
         return f"Conta(numero={self.numero}, cliente_conta='{self.cliente_conta}', " \

@@ -1,4 +1,5 @@
 from app import db
+from sqlalchemy.orm import backref
 
 class Telefones(db.Model):
     __tablename__ = 'telefones'
@@ -6,7 +7,7 @@ class Telefones(db.Model):
     cliente_tel = db.Column(db.String(14), db.ForeignKey('cliente.cpf', ondelete='CASCADE'), primary_key=True)
     telefone = db.Column(db.String(11), primary_key=True)
 
-    cliente = db.relationship('Cliente', backref='telefones', lazy=True)
+    cliente = db.relationship('Cliente', backref=backref("telefones", cascade="all, delete-orphan"), lazy=True)
 
     def __repr__(self):
         return f"Telefone(cliente_tel={self.cliente_tel}, telefone={self.telefone})"

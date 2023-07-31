@@ -1,15 +1,9 @@
-# config.py
-import os
-
-basedir = os.path.abspath(os.path.dirname(__file__))
-
-# Configurações do banco de dados
+# configuracoes do banco de dados
 DATABASE = 'db'
-DB_USERNAME = 'fellip'
-DB_PASSWORD = 'fellip'
-DB_HOST = 'localhost'
-DB_PORT = 5432
+DATABASE_USERNAME = 'fellip'
+DATABASE_PASSWORD = 'fellip'
+DATABASE_HOST = 'localhost'
+DATABASE_PORT = 5432
 
-# Configuração do SQLAlchemy
-SQLALCHEMY_DATABASE_URI = f'postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DATABASE}'
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+# configuracao do SQLAlchemy
+SQLALCHEMY_DATABASE_URI = f'postgresql://{DATABASE_USERNAME}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE}'

@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
-from execute_query import execute_query
-from sqlalchemy import and_, or_, not_
+from sqlalchemy.exc import IntegrityError
+from psycopg2.errors import UniqueViolation
+from sqlalchemy import or_
 
 from app import db
 
@@ -19,7 +20,7 @@ def listar_clientes():
 
 """
     Retorna um ou mais clientes
-    Parâmetro de url: parametro (nome, email ou cpf)
+    Parametro de url: parametro (nome, email ou cpf)
     no caso da busca por nome o retorno pode ser mais de um cliente
 """
 @cliente_bp.route('/api/clientes/<parametro>', methods=['GET'])
@@ -33,7 +34,7 @@ def obter_cliente_parametro_url(parametro):
 
 """
     Cria um cliente e salva no banco de dados
-    Campos obrigatórios do body: cpf, nome e email
+    Campos obrigatorios do body: cpf, nome e email
     Demais campos são opcionais
 """
 @cliente_bp.route('/api/clientes', methods=['POST'])
@@ -51,50 +52,62 @@ def inserir_cliente():
     cidade = data.get('cidade')
     estado = data.get('estado')
 
-    # Verificar se todos os campos obrigatórios foram fornecidos
-    if not cpf or not nome or not email:
+    # verifica se todos os campos obrigatórios foram enviados
+    if None in [cpf, nome, email]:
         return jsonify({'error': 'cpf, nome e email são campos obrigatórios'}), 400
 
-    cliente = Cliente(cpf=cpf, nome=nome, email=email, data_nasc=data_nasc, cep=cep, numero_casa=numero_casa,
+    novoCliente = Cliente(cpf=cpf, nome=nome, email=email, data_nasc=data_nasc, cep=cep, numero_casa=numero_casa,
                       rua=rua, bairro=bairro, cidade=cidade, estado=estado)
 
     try:
-        db.session.add(cliente)
+        db.session.add(novoCliente)
         db.session.commit()
+        
         return jsonify({'message': 'Cliente criado com sucesso'}), 201
-    except Exception as e:
+    except IntegrityError as e:
         db.session.rollback()
-        return jsonify({'error': 'Erro ao criar cliente. Detalhes: ' + str(e)}), 500
+
+        # verifica se o erro e que ja existe cliente com esse cpf
+        if isinstance(e.orig, UniqueViolation):
+            return jsonify({'error': f'O cpf {cpf} já existe'}), 400
+        else:
+            return jsonify({'error': 'Erro ao criar cliente. Erro: ' + str(err)}), 500
+    except Exception as err:
+        db.session.rollback()
+        
+        return jsonify({'error': 'Erro ao criar cliente. Erro: ' + str(err)}), 500
 
 """
-    Atualiza um cliente no banco, necessário passar o cpf pela url
+    Atualiza um cliente no banco, necessario passar o cpf pela url
     Atualiza apenas os valores que forem passados, ex: se passar nome e email, apenas
-    esses serão atualizados
+    esses serao atualizados
 """
 @cliente_bp.route('/api/clientes/<cpf>', methods=['PUT'])
 def atualizar_cliente(cpf):
     cliente = Cliente.query.get(cpf)
 
     if cliente is None:
-        return jsonify({'error': 'Cliente não encontrado'}), 400
+        return jsonify({'error': 'Cliente não encontrado'}), 404
 
     data = request.get_json()
 
-    # Seta os atributos novos para os valores que foram passados no body (!= None)
+    # seta os atributos novos para os valores que foram passados no body (!= None)
     for key in data.keys():
         if data[key] is not None and key in Cliente.__table__.columns.keys():
             setattr(cliente, key, data[key])
 
     try:
         db.session.commit()
+
         return jsonify({'message': 'Cliente atualizado com sucesso'}), 200
-    except Exception as e:
+    except Exception as err:
         db.session.rollback()
-        return jsonify({'error': 'Erro ao atualizar cliente. Detalhes: ' + str(e)}), 500
+
+        return jsonify({'error': 'Erro ao atualizar cliente. Erro: ' + str(err)}), 500
 
 """
     Exclui um cliente
-    Parâmetro do body: cpf (cpf do cliente)
+    Parametro do body: cpf (cpf do cliente)
 """
 @cliente_bp.route('/api/clientes/<cpf>', methods=['DELETE'])
 def excluir_cliente(cpf):
@@ -106,7 +119,9 @@ def excluir_cliente(cpf):
     try:
         db.session.delete(cliente)
         db.session.commit()
+
         return jsonify({'message': 'Cliente excluído com sucesso'}), 200
-    except Exception as e:
+    except Exception as err:
         db.session.rollback()
-        return jsonify({'error': 'Erro ao excluir cliente. Detalhes: ' + str(e)}), 500
+
+        return jsonify({'error': 'Erro ao excluir cliente. Erro: ' + str(err)}), 500

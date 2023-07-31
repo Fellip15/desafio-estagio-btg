@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
-from execute_query import execute_query
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import and_, or_, not_
+from psycopg2.errors import UniqueViolation
+from sqlalchemy import or_
 from app import db
 
 from app.models.Conta import Conta
@@ -19,7 +19,7 @@ def listar_clientes():
 
 """
     Rota de contas que retorna apenas uma conta:
-    Parâmetro de url: parametro -> numero da conta ou cpf do usuário
+    Parametro de url: parametro -> numero da conta ou cpf do usuario
     no caso da busca pelo cpf do usuário o retorno pode ser mais de uma conta
 """
 @conta_bp.route('/api/contas/<parametro>', methods=['GET'])
@@ -39,7 +39,7 @@ def obter_conta_parametro_url(parametro):
 
 """
     Cria uma conta e salva no banco de dados
-    Campos obrigatórios no body: numero, cliente_conta (cpf do dono da conta), saldo
+    Campos obrigatorios no body: numero, cliente_conta (cpf do dono da conta), saldo
 """
 @conta_bp.route('/api/contas', methods=['POST'])
 def inserir_conta():
@@ -51,7 +51,7 @@ def inserir_conta():
     limite_mov = data.get('limite_mov')
     senha = data.get('senha')
 
-    # Verificar se todos os campos obrigatórios foram fornecidos
+    # verifica se todos os campos obrigatorios foram enviados
     if None in [numero, cliente_conta, saldo, senha]:
         return jsonify({'error': 'numero, cliente_conta, saldo e senha são campos obrigatórios'}), 400
 
@@ -60,16 +60,22 @@ def inserir_conta():
     try:
         db.session.add(conta)
         db.session.commit()
+
         return jsonify({'message': 'Conta criada com sucesso'}), 201
-    except IntegrityError:
+    except IntegrityError as e:
+
+        # verifica se o erro e que ja existe telefone para esse cliente 
+        if isinstance(e.orig, UniqueViolation):
+            return jsonify({'error': f'A conta {numero} para o cliente {cliente_conta} já existe'}), 400
         return jsonify({'error': f'O cliente com cpf {cliente_conta} não existe'}), 500
-    except Exception as e:
+    except Exception as err:
         db.session.rollback()
-        return jsonify({'error': 'Erro ao criar conta. Detalhes: ' + str(e)}), 500
+
+        return jsonify({'error': 'Erro ao criar conta. Erro: ' + str(err)}), 500
 
 """
     Atualiza uma conta no banco de dados
-    Necessário passar o número da conta que será atualizada
+    Necessario passar o numero da conta que sera atualizada
     Atualiza apenas os valores passados
 """
 @conta_bp.route('/api/contas/<numero>', methods=['PUT'])
@@ -91,11 +97,11 @@ def atualizar_conta(numero):
         return jsonify({'message': 'Conta atualizada com sucesso'}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': 'Erro ao atualizar conta. Detalhes: ' + str(e)}), 500
+        return jsonify({'error': 'Erro ao atualizar conta. Erro: ' + str(e)}), 500
 
 """
     Exclui uma conta
-    Parâmetro do url: numero (numero da conta)
+    Parametro do url: numero (numero da conta)
 """
 @conta_bp.route('/api/contas/<numero>', methods=['DELETE'])
 def excluir_conta(numero):
@@ -107,7 +113,9 @@ def excluir_conta(numero):
     try:
         db.session.delete(conta)
         db.session.commit()
+
         return jsonify({'message': 'Conta excluída com sucesso'}), 200
-    except Exception as e:
+    except Exception as err:
         db.session.rollback()
-        return jsonify({'error': 'Erro ao excluir conta. Detalhes: ' + str(e)}), 500
+
+        return jsonify({'error': 'Erro ao excluir conta. Erro: ' + str(err)}), 500

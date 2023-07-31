@@ -1,14 +1,9 @@
 /*Adiciona um novo cliente*/
-INSERT INTO cliente (
-    cpf, nome, email, 
-    data_nasc, cep, numero_casa, 
-    rua, bairro, cidade, estado
-    )
-VALUES (
-    '123.456.789-00', 'João da Silva', 'joao@email.com', 
-    '1990-05-15', '12345-678', 123, 
-    'Rua das Flores', 'Centro', 'Cidade A', 'SP'
-    );
+INSERT INTO cliente ( cpf, nome, email, data_nasc, 
+    cep, numero_casa, rua, bairro, cidade, estado)
+VALUES ( '123.456.789-00', 'João da Silva', 'joao@email.com', '1990-05-15', 
+    '12345-678', 123, 'Rua das Flores', 'Centro', 'Cidade A', 'SP'
+);
 
 /*Adiciona um telefone*/
 INSERT INTO telefones (cliente_tel, telefone)
