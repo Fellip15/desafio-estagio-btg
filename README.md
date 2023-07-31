@@ -141,7 +141,7 @@ python3 run_ddl_dml.py
 # Documentação
 Nesse tópico será mostrado as rotas criadas e o que é necessário para chama-las.
 
-## Rotas telefones
+## Documentação API telefones
 ### Listar telefones
 **Descrição:** Esta rota permite listar todos os telefones cadastrados no sistema.
 
@@ -276,7 +276,39 @@ Corpo da Requisição (em formato JSON):
   "error": "É necessário mandar o telefone novo, o antigo (url) e o cpf do cliente"
 }
 ```
-## Rotas movimentações
+
+### Excluir Telefone
+**Descrição:** Esta rota permite excluir um telefone associado a um cliente específico na base de dados do sistema.
+
+**Método HTTP:** DELETE
+
+**URL:** ```/api/telefones/<cliente_tel>/<telefone>```
+
+**Parâmetros da URL:**
+
+* `<cliente_tel>`: O CPF do cliente dono do telefone que se deseja excluir.
+* `<telefone>`: O número de telefone que se deseja excluir.
+
+**Resposta:**
+
+* Código de status: 200 (OK) se o telefone for excluído com sucesso.
+* Corpo da resposta: Uma mensagem de sucesso.
+
+**Exemplo de resposta (sucesso):**
+```json
+{
+  "message": "Telefone excluído com sucesso"
+}
+```
+
+**Exemplo de resposta (falha):**
+```json
+{
+  "error": "Telefone não encontrado"
+}
+```
+
+## Documentação API movimentações
 A API de Movimentações é uma interface para gerenciar as movimentações financeiras associadas a contas em um sistema. Abaixo estão listadas as rotas disponíveis na API, suas descrições e exemplos de uso.
 
 ### Listar Movimentações
@@ -422,7 +454,38 @@ A API de Movimentações é uma interface para gerenciar as movimentações fina
 }
 ```
 
-## Rota de cliente
+### Excluir Movimentação
+**Descrição:** Esta rota permite excluir uma movimentação bancária na base de dados do sistema.
+
+**Método HTTP:** DELETE
+
+**URL:** ```/api/movimentacoes/<data_hora>/<conta_mov>```
+
+**Parâmetros da URL:**
+
+* `<data_hora>`: A data e hora da movimentação que se deseja excluir.
+* `<conta_mov>`: O número da conta associada à movimentação que se deseja excluir.
+
+**Resposta:**
+
+* Código de status: 200 (OK) se a movimentação for excluída com sucesso.
+* Corpo da resposta: Uma mensagem de sucesso.
+
+**Exemplo de resposta (sucesso):**
+```json
+{
+  "message": "Movimentação excluída com sucesso"
+}
+```
+
+**Exemplo de resposta (falha):**
+```json
+{
+  "error": "Movimentação não encontrada"
+}
+```
+
+## Documentação API de cliente
 
 A API de Clientes é uma interface para gerenciar informações dos clientes em um sistema. Abaixo estão listadas as rotas disponíveis na API, suas descrições e exemplos de uso.
 
@@ -592,6 +655,36 @@ Exemplo de resposta (sucesso):
 }
 ```
 
+### Excluir Cliente
+**Descrição:** Esta rota permite excluir um cliente da base de dados do sistema.
+
+**Método HTTP:** DELETE
+
+**URL:** ```/api/clientes/<cpf>```
+
+**Parâmetros da URL:**
+
+* `<cpf>`: O CPF do cliente que se deseja excluir.
+
+**Resposta:**
+
+* Código de status: 200 (OK) se o cliente for excluído com sucesso.
+* Corpo da resposta: Uma mensagem de sucesso.
+
+**Exemplo de resposta (sucesso):**
+```json
+{
+  "message": "Cliente excluído com sucesso"
+}
+```
+
+**Exemplo de resposta (falha):**
+```json
+{
+  "error": "Cliente não encontrado"
+}
+```
+
 ## Documentação da API de Contas
 
 A API de Contas é uma interface para gerenciar informações de contas bancárias em um sistema. Abaixo estão listadas as rotas disponíveis na API, suas descrições e exemplos de uso.
@@ -726,6 +819,36 @@ A API de Contas é uma interface para gerenciar informações de contas bancári
 ```json
 {
   "message": "Conta atualizada com sucesso"
+}
+```
+
+**Exemplo de resposta (falha):**
+```json
+{
+  "error": "Conta não encontrada"
+}
+```
+
+### Excluir Conta
+**Descrição:** Esta rota permite excluir uma conta bancária na base de dados do sistema.
+
+**Método HTTP:** DELETE
+
+**URL:** ```/api/contas/<numero>```
+
+**Parâmetros da URL:**
+
+* `<numero>`: O número da conta que se deseja excluir.
+
+**Resposta:**
+
+* Código de status: 200 (OK) se a conta for excluída com sucesso.
+* Corpo da resposta: Uma mensagem de sucesso.
+
+**Exemplo de resposta (sucesso):**
+```json
+{
+  "message": "Conta excluída com sucesso"
 }
 ```
 
